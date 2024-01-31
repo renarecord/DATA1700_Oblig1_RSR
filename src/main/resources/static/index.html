@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="no" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Oblig1 Bestilling av kinobiletter</title>
+
+    <h1>Bestilling av kinobiletter</h1>
+    <script type="application/javascript">
+
+        function visBillett(nyBillett) {
+
+            const billetterTabell = document.getElementById("billetter");
+            const row = billetterTabell.insertRow(billetterTabell.length);
+            const filmCelle = row.insertCell(0);
+            const antallCelle = row.insertCell(1);
+            const fornavnCelle = row.insertCell(2);
+            const etternavnCelle = row.insertCell(3);
+            const telefonnrCelle = row.insertCell(4);
+            const epostCelle = row.insertCell(5);
+
+            filmCelle.innerHTML = nyBillett.film;
+            antallCelle.innerHTML = nyBillett.antall;
+            fornavnCelle.innerHTML = nyBillett.fornavn;
+            etternavnCelle.innerHTML = nyBillett.etternavn;
+            telefonnrCelle.innerHTML = nyBillett.telefonnr;
+            epostCelle.innerHTML = nyBillett.epost;
+
+        }
+
+        function slettAlt() {
+            var slettTabell = 0;
+            var tabell = document.getElementById('billetter');
+            var rowCount = tabell.rows.length;
+            for (var i = slettTabell; i < rowCount; i++) {
+                tabell.deleteRow(slettTabell);
+
+            }
+        }
+
+        function registrer() {
+            const film = document.getElementById("film").value;
+            const antall = document.getElementById("antall").value;
+            const fornavn = document.getElementById("fornavn").value;
+            const etternavn = document.getElementById("etternavn").value;
+            const telefonnr = document.getElementById("telefonnr").value;
+            const epost = document.getElementById("epost").value;
+
+
+            const billett = {
+                film: film,
+                antall: antall,
+                fornavn: fornavn,
+                etternavn: etternavn,
+                telefonnr: telefonnr,
+                epost: epost
+            };
+            let gyldigInput = true;
+            if (film == "Velg film her") {
+                document.getElementById("film-feilmelding").hidden = false;
+                gyldigInput = false;
+            }
+            if (film == "") {
+                document.getElementById("filmTomt-feilmelding").hidden = false;
+                gyldigInput = false;
+            }
+            if (antall <= 0) {
+                document.getElementById("antall-feilmelding").hidden = false;
+                gyldigInput = false;
+            }
+            if (antall == "") {
+                gyldigInput = false;
+                document.getElementById("antallTomt-feilmelding").hidden = false;
+            }
+            if (fornavn == "") {
+                gyldigInput = false;
+                document.getElementById("fornavnTomt-feilmelding").hidden = false;
+            }
+            if (!isNaN(fornavn)) {
+                gyldigInput = false;
+                document.getElementById("fornavn-feilmelding").hidden = false;
+            }
+            if (etternavn == "") {
+                gyldigInput = false;
+                document.getElementById("etternavnTomt-feilmelding").hidden = false;
+            }
+            if (!isNaN(etternavn)) {
+                gyldigInput = false;
+                document.getElementById("etternavn-feilmelding").hidden = false;
+            }
+            if (telefonnr == "") {
+                gyldigInput = false;
+                document.getElementById("telefonnrTomt-feilmelding").hidden = false;
+            }
+            if (telefonnr.length != 8) {
+                gyldigInput = false;
+                document.getElementById("telefonnr-feilmelding").hidden = false;
+            }
+            if (epost == "") {
+                gyldigInput = false;
+                document.getElementById("epostTomt-feilmelding").hidden = false;
+            }
+            if (!epost.match(/[a-zA-Z0-9-]@[a-zA-Z0-9-]+.[a-zA-Z0-9-]/)) {
+                gyldigInput = false;
+                document.getElementById("epost-feilmelding").hidden = false;
+            }
+
+            //nullstill inputboksen
+            if (gyldigInput) {
+                visBillett(billett)
+
+                document.getElementById("film").value = "";
+                document.getElementById("antall").value = "";
+                document.getElementById("fornavn").value = "";
+                document.getElementById("etternavn").value = "";
+                document.getElementById("telefonnr").value = "";
+                document.getElementById("epost").value = "";
+            }
+        }
+
+        function skjulFeilmelding(id) {
+            document.getElementById(id).hidden = true;
+        }
+    </script>
+</head>
+<body>
+
+<form>
+    <table>
+        <tr>
+            <td>
+                <label> Velg film:</label>
+            </td>
+            <td>
+                <select id="film" style="width:100%;"
+                        onFocus="skjulFeilmelding('film-feilmelding')"
+                        oninput="skjulFeilmelding('filmTomt-feilmelding')">
+                    <option>Velg film her</option>
+                    <option>Die hard 4</option>
+                    <option>Titanic</option>
+                    <option>Wish</option>
+                    <option>Sing 3</option>
+                    <option>John Wick 4</option>
+                </select>
+            </td>
+            <td>
+                <p id="film-feilmelding" style="color: red" hidden>Må velge film.</p>
+                <p id="filmTomt-feilmelding" style="color: red" hidden>Må velge film.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>Antall</td>
+            <td><input type="number" id="antall"
+                       onFocus="skjulFeilmelding('antall-feilmelding')"
+                       oninput="skjulFeilmelding('antallTomt-feilmelding')"/></td>
+            <td>
+                <p id="antallTomt-feilmelding" style="color: red" hidden>Må velge ett tall.</p>
+                <p id="antall-feilmelding" style="color: red" hidden>Antall må være større enn 0.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>Fornavn</td>
+            <td><input type="text" id="fornavn"
+                       onFocus="skjulFeilmelding('fornavnTomt-feilmelding')"
+                       oninput="skjulFeilmelding('fornavn-feilmelding')"/></td>
+
+            <td>
+                <p id="fornavnTomt-feilmelding" style="color: red" hidden>Må skrive inn fornavn.</p>
+                <p id="fornavn-feilmelding" style="color: red" hidden>Bruk kun bokstaver i fornavn.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>Etternavn</td>
+            <td><input type="text" id="etternavn"
+                       onFocus="skjulFeilmelding('etternavnTomt-feilmelding')"
+                       oninput="skjulFeilmelding('etternavn-feilmelding')"/></td>
+            <td>
+                <p id="etternavnTomt-feilmelding" style="color: red" hidden>Må skrive inn etternavn.</p>
+                <p id="etternavn-feilmelding" style="color: red" hidden>Bruk kun bokstaver i etternavn.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>Telefonnr</td>
+            <td><input type="number" id="telefonnr"
+                       onFocus="skjulFeilmelding('telefonnrTomt-feilmelding')"
+                       oninput="skjulFeilmelding('telefonnr-feilmelding')"/></td>
+            <td>
+                <p id="telefonnrTomt-feilmelding" style="color: red" hidden>Må skrive inn telefonnr.</p>
+                <p id="telefonnr-feilmelding" style="color: red" hidden>Bruk 8-siffer tall.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>Epost</td>
+            <td><input type="text" id="epost" onFocus="skjulFeilmelding('epostTomt-feilmelding')"
+                       oninput="skjulFeilmelding('epost-feilmelding')"/>
+
+            </td>
+            <td>
+                <p id="epostTomt-feilmelding" style="color: red" hidden>Må skrive inn epost.</p>
+                <p id="epost-feilmelding" style="color: red" hidden>Bruk glydig epost!.</p>
+            </td>
+        </tr>
+
+    </table>
+</form>
+
+<button onclick="registrer()">Kjøp billett</button>
+
+
+<h2>Alle billetter</h2>
+<table id="billetter">
+    <tr>
+        <th>Tittel</th>
+        <th>Antall</th>
+        <th>Fornavn</th>
+        <th>Etternavn</th>
+        <th>Telefonnr</th>
+        <th>Epost</th>
+
+    </tr>
+
+</table>
+<button onclick="slettAlt()">Slett alle billettene</button>
+
+
+</body>
+</html>
