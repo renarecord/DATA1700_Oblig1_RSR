@@ -6,34 +6,41 @@
 
     <h1>Bestilling av kinobiletter</h1>
     <script type="application/javascript">
+        let billetter = [];
 
-        function visBillett(nyBillett) {
-
-            const billetterTabell = document.getElementById("billetter");
-            const row = billetterTabell.insertRow(billetterTabell.length);
-            const filmCelle = row.insertCell(0);
-            const antallCelle = row.insertCell(1);
-            const fornavnCelle = row.insertCell(2);
-            const etternavnCelle = row.insertCell(3);
-            const telefonnrCelle = row.insertCell(4);
-            const epostCelle = row.insertCell(5);
-
-            filmCelle.innerHTML = nyBillett.film;
-            antallCelle.innerHTML = nyBillett.antall;
-            fornavnCelle.innerHTML = nyBillett.fornavn;
-            etternavnCelle.innerHTML = nyBillett.etternavn;
-            telefonnrCelle.innerHTML = nyBillett.telefonnr;
-            epostCelle.innerHTML = nyBillett.epost;
-
-        }
-
-        function slettAlt() {
-            var slettTabell = 0;
+        function slettRader() {
+            var slettTabell = 1;
             var tabell = document.getElementById('billetter');
             var rowCount = tabell.rows.length;
             for (var i = slettTabell; i < rowCount; i++) {
                 tabell.deleteRow(slettTabell);
 
+            }
+        }
+
+        function slettAlt() {
+            billetter = [];
+            slettRader();
+        }
+
+        function visBilletter() {
+            slettRader();
+            const billetterTabell = document.getElementById("billetter");
+            for (let i = 0; i < billetter.length; i++) {
+                const row = billetterTabell.insertRow(i + 1);
+                const filmCelle = row.insertCell(0);
+                const antallCelle = row.insertCell(1);
+                const fornavnCelle = row.insertCell(2);
+                const etternavnCelle = row.insertCell(3);
+                const telefonnrCelle = row.insertCell(4);
+                const epostCelle = row.insertCell(5);
+
+                filmCelle.innerHTML = billetter[i].film;
+                antallCelle.innerHTML = billetter[i].antall;
+                fornavnCelle.innerHTML = billetter[i].fornavn;
+                etternavnCelle.innerHTML = billetter[i].etternavn;
+                telefonnrCelle.innerHTML = billetter[i].telefonnr;
+                epostCelle.innerHTML = billetter[i].epost;
             }
         }
 
@@ -45,15 +52,6 @@
             const telefonnr = document.getElementById("telefonnr").value;
             const epost = document.getElementById("epost").value;
 
-
-            const billett = {
-                film: film,
-                antall: antall,
-                fornavn: fornavn,
-                etternavn: etternavn,
-                telefonnr: telefonnr,
-                epost: epost
-            };
             let gyldigInput = true;
             if (film == "Velg film her") {
                 document.getElementById("film-feilmelding").hidden = false;
@@ -106,14 +104,22 @@
 
             //nullstill inputboksen
             if (gyldigInput) {
-                visBillett(billett)
-
                 document.getElementById("film").value = "";
                 document.getElementById("antall").value = "";
                 document.getElementById("fornavn").value = "";
                 document.getElementById("etternavn").value = "";
                 document.getElementById("telefonnr").value = "";
                 document.getElementById("epost").value = "";
+
+                billetter.push({
+                    film: film,
+                    antall: antall,
+                    fornavn: fornavn,
+                    etternavn: etternavn,
+                    telefonnr: telefonnr,
+                    epost: epost
+                });
+                visBilletter()
             }
         }
 
