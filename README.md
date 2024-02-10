@@ -5,8 +5,7 @@ OsloMet brukernavn: rerec0016
 
 GitHub brukernavn: renarecord
 
-Github repo URL: https://github.com/data1700-v23/oblig-1-renarecord
-
+Github repo URL: [https://github.com/renarecord/DATA1700_Oblig1_RSR]
 Fullt navn: Rena Samantha Record
 
 Kort beskrivelse av applikasjon (5-10 setninger):
