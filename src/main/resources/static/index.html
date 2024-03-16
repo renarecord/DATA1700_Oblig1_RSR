@@ -3,9 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Oblig1 Bestilling av kinobiletter</title>
+    <style>
+        table tr td {
+            padding-bottom: 7px;
+        }
+    </style>
 
-    <h1>Bestilling av kinobiletter</h1>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script type="application/javascript">
+
+
         let billetter = [];
 
         function slettRader() {
@@ -21,6 +30,9 @@
         function slettAlt() {
             billetter = [];
             slettRader();
+            $.get("/slettAlle", function () {
+                hentAlle();
+            });
         }
 
         function visBilletter() {
@@ -41,7 +53,12 @@
                 etternavnCelle.innerHTML = billetter[i].etternavn;
                 telefonnrCelle.innerHTML = billetter[i].telefonnr;
                 epostCelle.innerHTML = billetter[i].epost;
+
             }
+        }
+
+        function skjulFeilmelding(id) {
+            document.getElementById(id).hidden = true;
         }
 
         function registrer() {
@@ -100,8 +117,9 @@
             if (!epost.match(/[a-zA-Z0-9-]@[a-zA-Z0-9-]+.[a-zA-Z0-9-]/)) {
                 gyldigInput = false;
                 document.getElementById("epost-feilmelding").hidden = false;
-            }
 
+
+            }
             //nullstill inputboksen
             if (gyldigInput) {
                 document.getElementById("film").value = "";
@@ -119,114 +137,152 @@
                     telefonnr: telefonnr,
                     epost: epost
                 });
-                visBilletter()
+                $.post("/lagre", {
+                    film: film,
+                    antall: antall,
+                    fornavn: fornavn,
+                    etternavn: etternavn,
+                    telefonnr: telefonnr,
+                    epost: epost
+                }, function (data) {
+                    billetter = data;
+                    formaterData();
+                });
+            }
+
+            function formaterData() {
+                visBilletter();
             }
         }
 
-        function skjulFeilmelding(id) {
-            document.getElementById(id).hidden = true;
-        }
+
     </script>
 </head>
 <body>
 
-<form>
-    <table>
-        <tr>
-            <td>
-                <label> Velg film:</label>
-            </td>
-            <td>
-                <select id="film" style="width:100%;"
-                        onFocus="skjulFeilmelding('film-feilmelding')"
-                        oninput="skjulFeilmelding('filmTomt-feilmelding')">
-                    <option>Velg film her</option>
-                    <option>Die hard 4</option>
-                    <option>Titanic</option>
-                    <option>Wish</option>
-                    <option>Sing 3</option>
-                    <option>John Wick 4</option>
-                </select>
-            </td>
-            <td>
-                <p id="film-feilmelding" style="color: red" hidden>Må velge film.</p>
-                <p id="filmTomt-feilmelding" style="color: red" hidden>Må velge film.</p>
-            </td>
-        </tr>
-        <tr>
-            <td>Antall</td>
-            <td><input type="number" id="antall"
-                       onFocus="skjulFeilmelding('antall-feilmelding')"
-                       oninput="skjulFeilmelding('antallTomt-feilmelding')"/></td>
-            <td>
-                <p id="antallTomt-feilmelding" style="color: red" hidden>Må velge ett tall.</p>
-                <p id="antall-feilmelding" style="color: red" hidden>Antall må være større enn 0.</p>
-            </td>
-        </tr>
-        <tr>
-            <td>Fornavn</td>
-            <td><input type="text" id="fornavn"
-                       onFocus="skjulFeilmelding('fornavnTomt-feilmelding')"
-                       oninput="skjulFeilmelding('fornavn-feilmelding')"/></td>
-
-            <td>
-                <p id="fornavnTomt-feilmelding" style="color: red" hidden>Må skrive inn fornavn.</p>
-                <p id="fornavn-feilmelding" style="color: red" hidden>Bruk kun bokstaver i fornavn.</p>
-            </td>
-        </tr>
-        <tr>
-            <td>Etternavn</td>
-            <td><input type="text" id="etternavn"
-                       onFocus="skjulFeilmelding('etternavnTomt-feilmelding')"
-                       oninput="skjulFeilmelding('etternavn-feilmelding')"/></td>
-            <td>
-                <p id="etternavnTomt-feilmelding" style="color: red" hidden>Må skrive inn etternavn.</p>
-                <p id="etternavn-feilmelding" style="color: red" hidden>Bruk kun bokstaver i etternavn.</p>
-            </td>
-        </tr>
-        <tr>
-            <td>Telefonnr</td>
-            <td><input type="number" id="telefonnr"
-                       onFocus="skjulFeilmelding('telefonnrTomt-feilmelding')"
-                       oninput="skjulFeilmelding('telefonnr-feilmelding')"/></td>
-            <td>
-                <p id="telefonnrTomt-feilmelding" style="color: red" hidden>Må skrive inn telefonnr.</p>
-                <p id="telefonnr-feilmelding" style="color: red" hidden>Bruk 8-siffer tall.</p>
-            </td>
-        </tr>
-        <tr>
-            <td>Epost</td>
-            <td><input type="text" id="epost" onFocus="skjulFeilmelding('epostTomt-feilmelding')"
-                       oninput="skjulFeilmelding('epost-feilmelding')"/>
-
-            </td>
-            <td>
-                <p id="epostTomt-feilmelding" style="color: red" hidden>Må skrive inn epost.</p>
-                <p id="epost-feilmelding" style="color: red" hidden>Bruk glydig epost!.</p>
-            </td>
-        </tr>
-
-    </table>
-</form>
-
-<button onclick="registrer()">Kjøp billett</button>
+<div class="container">
+    <form>
 
 
-<h2>Alle billetter</h2>
-<table id="billetter">
-    <tr>
-        <th>Tittel</th>
-        <th>Antall</th>
-        <th>Fornavn</th>
-        <th>Etternavn</th>
-        <th>Telefonnr</th>
-        <th>Epost</th>
+        <h1>Bestilling av kinobiletter</h1>
 
-    </tr>
+        <div>
+            <div class="col-md-12">
+                <table>
+                    <tr>
+                        <td>
+                            <label for="film"> Velg film:</label>
 
-</table>
-<button onclick="slettAlt()">Slett alle billettene</button>
+                        </td>
+
+                        <td>
+                            <select id="film" style="width:100%;"
+                                    onFocus="skjulFeilmelding('film-feilmelding')"
+                                    oninput="skjulFeilmelding('filmTomt-feilmelding')">
+                                <option>Velg film her</option>
+                                <option>Die hard 4</option>
+                                <option>Titanic</option>
+                                <option>Wish</option>
+                                <option>Sing 3</option>
+                                <option>John Wick 4</option>
+                            </select>
+                        </td>
 
 
+                        <td>
+                            <p id="film-feilmelding" style="color: red" hidden>Må velge film.</p>
+                            <p id="filmTomt-feilmelding" style="color: red" hidden>Må velge film.</p>
+                        </td>
+
+                    </tr>
+                    <tr>
+
+                        <td><label for="antall">Antall</label>
+
+                        <td><input type="number" id="antall"
+                                   onFocus="skjulFeilmelding('antall-feilmelding')"
+                                   oninput="skjulFeilmelding('antallTomt-feilmelding')"/>
+                        </td>
+                        <td>
+                            <p id="antallTomt-feilmelding" style="color: red" hidden>Må velge ett tall.</p>
+                            <p id="antall-feilmelding" style="color: red" hidden>Antall må være større enn 0.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label for="fornavn">Fornavn</label></td>
+                        <td><input type="text" id="fornavn"
+                                   onFocus="skjulFeilmelding('fornavnTomt-feilmelding')"
+                                   oninput="skjulFeilmelding('fornavn-feilmelding')"/></td>
+
+                        <td>
+                            <p id="fornavnTomt-feilmelding" style="color: red" hidden>Må skrive inn fornavn.</p>
+                            <p id="fornavn-feilmelding" style="color: red" hidden>Bruk kun bokstaver i fornavn.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label for="etternavn">Etternavn</label></td>
+                        <td><input type="text" id="etternavn"
+                                   onFocus="skjulFeilmelding('etternavnTomt-feilmelding')"
+                                   oninput="skjulFeilmelding('etternavn-feilmelding')"/>
+                        </td>
+                        <td>
+                            <p id="etternavnTomt-feilmelding" style="color: red" hidden>Må skrive inn etternavn.</p>
+                            <p id="etternavn-feilmelding" style="color: red" hidden>Bruk kun bokstaver i
+                                etternavn.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label for="telefonnr">Telefonnr</label></td>
+                        <td><input type="number" id="telefonnr"
+                                   onFocus="skjulFeilmelding('telefonnrTomt-feilmelding')"
+                                   oninput="skjulFeilmelding('telefonnr-feilmelding')"/>
+                        </td>
+                        <td>
+                            <p id="telefonnrTomt-feilmelding" style="color: red" hidden>Må skrive inn telefonnr.</p>
+                            <p id="telefonnr-feilmelding" style="color: red" hidden>Bruk 8-siffer tall.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label for="epost">Epost</label></td>
+                        <td><input type="text" id="epost"
+                                   onFocus="skjulFeilmelding('epostTomt-feilmelding')"
+                                   oninput="skjulFeilmelding('epost-feilmelding')"/>
+
+                        </td>
+                        <td>
+                            <p id="epostTomt-feilmelding" style="color: red" hidden>Må skrive inn epost.</p>
+                            <p id="epost-feilmelding" style="color: red" hidden>Bruk glydig epost!.</p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </form>
+    <button class="btn btn-primary" onclick="registrer()">Kjøp billett</button>
+</div>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Alle billetter</h2>
+            <table class="table table-striped" id="billetter">
+                <tr>
+                    <th>Tittel</th>
+                    <th>Antall</th>
+                    <th>Fornavn</th>
+                    <th>Etternavn</th>
+                    <th>Telefonnr</th>
+                    <th>Epost</th>
+
+                </tr>
+
+
+            </table>
+        </div>
+    </div>
+    <button class="btn btn-danger" onclick="slettAlt()">Slett alle billettene</button>
+
+</div>
 </body>
 </html>
